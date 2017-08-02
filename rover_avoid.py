@@ -15,6 +15,13 @@ rr = RRB3(BATTERY_VOLTS, MOTOR_VOLTS)
 # if you dont have a switch, change the value below to True
 running = True #False
 
+def get_avg_distance():
+    sample_rate = 5
+    distance = 0
+    for _ in range(sample_rate):
+        distance += rr.get_distance()
+    return distance/sample_rate
+
 def turn_randomly():
     turn_time = random.randint(2, 4)
     turn_time = turn_time/2;
@@ -30,7 +37,7 @@ def turn_randomly():
 
 try:
     while True:
-        distance = rr.get_distance()
+        distance = get_avg_distance()
         print(distance)
         if distance < DISTANCE_THRESHOLD and running:
             turn_randomly()
@@ -40,7 +47,7 @@ try:
             running = not running
         if not running:
             rr.stop()
-        time.sleep(0.2)
+        time.sleep(0.1)
 finally:
     print("Exiting")
     rr.cleanup()
